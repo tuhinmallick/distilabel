@@ -62,12 +62,11 @@ class CustomDataset(Dataset):
             ) from e
 
         for dataset_row in self:
-            if any(
-                dataset_row[input_arg_name] is None  # type: ignore
+            if all(
+                dataset_row[input_arg_name] is not None
                 for input_arg_name in self.task.input_args_names
             ):
-                continue
-            rg_dataset.add_records(
-                self.task.to_argilla_record(dataset_row=dataset_row)  # type: ignore
-            )
+                rg_dataset.add_records(
+                    self.task.to_argilla_record(dataset_row=dataset_row)  # type: ignore
+                )
         return rg_dataset

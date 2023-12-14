@@ -700,69 +700,67 @@ def pipeline(
         ...     generator=generator,
         ... )
     """
-    if task == "preference":
-        if labeller is None:
-            from dataclasses import fields
-
-            from distilabel.llm.openai import OpenAILLM
-            from distilabel.tasks.preference.ultrafeedback import UltraFeedbackTask
-
-            task_cls = UltraFeedbackTask
-            task_kwargs = {
-                key: kwargs.get(key.name)
-                for key in fields(task_cls)
-                if key.name in kwargs and not key.name.startswith("__")
-            }
-
-            # Dynamically call the appropriate classmethod using getattr
-            if subtask is not None:
-                if subtask not in task_cls.__subtasks__:
-                    raise ValueError(
-                        f"Invalid subtask: {subtask}, available subtasks are {task_cls.__subtasks__}"
-                    )
-                classmethod_name = f"for_{subtask.lower().replace('-', '_')}"
-                if hasattr(task_cls, classmethod_name):
-                    task_cls = getattr(task_cls, classmethod_name)
-
-            logger.info(
-                "Since no `labeller` was provided, `OpenAILLM` will be used as the default labeller with `UltraFeedback`."
-            )
-
-            labeller = OpenAILLM(
-                model=kwargs.get("openai_model") or "gpt-3.5-turbo",
-                task=task_cls(**task_kwargs),  # type: ignore
-                max_new_tokens=kwargs.get("max_new_tokens") or 256,
-                num_threads=kwargs.get("num_threads") or 4,
-                openai_api_key=kwargs.get("openai_api_key")
-                or os.getenv("OPENAI_API_KEY"),
-                temperature=kwargs.get("temperature") or 0.0,
-            )
-        else:
-            from distilabel.tasks.preference.judgelm import JudgeLMTask
-            from distilabel.tasks.preference.ultrafeedback import UltraFeedbackTask
-            from distilabel.tasks.preference.ultrajudge import UltraJudgeTask
-
-            if not isinstance(
-                labeller.task, (UltraFeedbackTask, JudgeLMTask, UltraJudgeTask)
-            ):
-                warnings.warn(
-                    "The `labeller` task for `preference` must be an instance of `UltraFeedbackTask`,"
-                    f" `JudgeLMTask` or `UltraJudge`, got {labeller.task.__class__.__name__}."
-                    "If you are planning to use a custom `labeller` for a `preference` "
-                    "task, use it at your own risk.",
-                    UserWarning,
-                    stacklevel=2,
-                )
-
-        if generator is not None:
-            assert (
-                generator.task.input_args_names + generator.task.output_args_names
-                == labeller.task.input_args_names
-            ), (
-                f"`generator` outputs do not match `labeller` inputs: "
-                f"{generator.task.input_args_names + generator.task.output_args_names} != {labeller.task.input_args_names}"
-            )
-    else:
+    if task != "preference":
         raise ValueError(f"Invalid task: {task}, available tasks are: `preference`.")
 
+    from distilabel.tasks.preference.ultrafeedback import UltraFeedbackTask
+
+    if labeller is None:
+        from dataclasses import fields
+
+        from distilabel.llm.openai import OpenAILLM
+        task_cls = UltraFeedbackTask
+        task_kwargs = {
+            key: kwargs.get(key.name)
+            for key in fields(task_cls)
+            if key.name in kwargs and not key.name.startswith("__")
+        }
+
+        # Dynamically call the appropriate classmethod using getattr
+        if subtask is not None:
+            if subtask not in task_cls.__subtasks__:
+                raise ValueError(
+                    f"Invalid subtask: {subtask}, available subtasks are {task_cls.__subtasks__}"
+                )
+            classmethod_name = f"for_{subtask.lower().replace('-', '_')}"
+            if hasattr(task_cls, classmethod_name):
+                task_cls = getattr(task_cls, classmethod_name)
+
+        logger.info(
+            "Since no `labeller` was provided, `OpenAILLM` will be used as the default labeller with `UltraFeedback`."
+        )
+
+        labeller = OpenAILLM(
+            model=kwargs.get("openai_model") or "gpt-3.5-turbo",
+            task=task_cls(**task_kwargs),  # type: ignore
+            max_new_tokens=kwargs.get("max_new_tokens") or 256,
+            num_threads=kwargs.get("num_threads") or 4,
+            openai_api_key=kwargs.get("openai_api_key")
+            or os.getenv("OPENAI_API_KEY"),
+            temperature=kwargs.get("temperature") or 0.0,
+        )
+    else:
+        from distilabel.tasks.preference.judgelm import JudgeLMTask
+        from distilabel.tasks.preference.ultrajudge import UltraJudgeTask
+
+        if not isinstance(
+            labeller.task, (UltraFeedbackTask, JudgeLMTask, UltraJudgeTask)
+        ):
+            warnings.warn(
+                "The `labeller` task for `preference` must be an instance of `UltraFeedbackTask`,"
+                f" `JudgeLMTask` or `UltraJudge`, got {labeller.task.__class__.__name__}."
+                "If you are planning to use a custom `labeller` for a `preference` "
+                "task, use it at your own risk.",
+                UserWarning,
+                stacklevel=2,
+            )
+
+    if generator is not None:
+        assert (
+            generator.task.input_args_names + generator.task.output_args_names
+            == labeller.task.input_args_names
+        ), (
+            f"`generator` outputs do not match `labeller` inputs: "
+            f"{generator.task.input_args_names + generator.task.output_args_names} != {labeller.task.input_args_names}"
+        )
     return Pipeline(generator=generator, labeller=labeller)

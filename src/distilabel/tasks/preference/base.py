@@ -79,15 +79,14 @@ class PreferenceTask(Task):
                 f"The `rationale_column='{rationale_column}'` is not present in the dataset row. Please"
                 f" provide any of {list(dataset_row.keys())}.",
             )
-        questions = []
-        for idx in range(1, len(dataset_row[generations_column]) + 1):
-            questions.append(
-                rg.RatingQuestion(  # type: ignore
-                    name=f"{generations_column}-{idx}-{ratings_column}",
-                    title=f"What's the {ratings_column} for {generations_column}-{idx}?",
-                    values=ratings_values or [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                )
+        questions = [
+            rg.RatingQuestion(  # type: ignore
+                name=f"{generations_column}-{idx}-{ratings_column}",
+                title=f"What's the {ratings_column} for {generations_column}-{idx}?",
+                values=ratings_values or [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             )
+            for idx in range(1, len(dataset_row[generations_column]) + 1)
+        ]
         questions.append(
             rg.TextQuestion(  # type: ignore
                 name=f"{ratings_column}-{rationale_column}",
