@@ -65,12 +65,11 @@ class TextGenerationTask(Task):
             ValueError: if the `principles` are not included in the `principles_distribution`.
         """
         if isinstance(self.principles_distribution, dict):
-            not_included_principles = [
+            if not_included_principles := [
                 principle
                 for principle in self.principles
                 if principle not in self.principles_distribution
-            ]
-            if not_included_principles:
+            ]:
                 principles_str = ", ".join(
                     [f"'{principle}'" for principle in not_included_principles]
                 )
@@ -119,7 +118,7 @@ class TextGenerationTask(Task):
         system_prompt = self.system_prompt
         if self.principles_distribution is not None:
             principle = self._get_principle()
-            system_prompt += " " + principle
+            system_prompt += f" {principle}"
         return Prompt(system_prompt=system_prompt, formatted_prompt=input)
 
     def parse_output(self, output: str) -> dict[str, str]:

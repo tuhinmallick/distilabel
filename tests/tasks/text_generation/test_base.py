@@ -76,10 +76,7 @@ class TestSuiteTextGenerationTask:
             principles_distribution="balanced",
         )
         prompt = task.generate_prompt(input="Generate something my boy")
-        assert (
-            prompt.system_prompt
-            == task.system_prompt + " " + "Help! I need somebody..."
-        )
+        assert prompt.system_prompt == f"{task.system_prompt} Help! I need somebody..."
 
     def test_generate_prompt_with_distribution_principles(self) -> None:
         task = TextGenerationTask(
@@ -90,7 +87,4 @@ class TestSuiteTextGenerationTask:
             principles_distribution={"helpfulness": 1.0, "honesty": 0.0},
         )
         prompt = task.generate_prompt(input="Generate something my boy")
-        assert (
-            prompt.system_prompt
-            == task.system_prompt + " " + "Help! I need somebody..."
-        )
+        assert prompt.system_prompt == f"{task.system_prompt} Help! I need somebody..."

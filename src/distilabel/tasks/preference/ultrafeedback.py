@@ -118,7 +118,7 @@ class UltraFeedbackTask(PreferenceTask):
     ) -> "UltraFeedbackTask":
         kwargs = {}
         if system_prompt is not None:
-            kwargs.update({"system_prompt": system_prompt})
+            kwargs["system_prompt"] = system_prompt
         if task_description is None:
             task_description = dedent(
                 """
@@ -133,7 +133,7 @@ class UltraFeedbackTask(PreferenceTask):
                 **Scoring**: Rate outputs 1 to 5 based on the overall quality, considering all aspects:
                 """
             )
-        kwargs.update({"task_description": task_description})
+        kwargs["task_description"] = task_description
 
         if ratings is None:
             ratings = [
@@ -158,7 +158,7 @@ class UltraFeedbackTask(PreferenceTask):
                     description="**Excellent**: Accurate, confident, aligned with instructions, and free of hallucinations.",
                 ),
             ]
-        kwargs.update({"ratings": ratings})
+        kwargs["ratings"] = ratings
         return cls(**kwargs)
 
     @classmethod
@@ -170,7 +170,7 @@ class UltraFeedbackTask(PreferenceTask):
     ) -> "UltraFeedbackTask":
         kwargs = {}
         if system_prompt is not None:
-            kwargs.update({"system_prompt": system_prompt})
+            kwargs["system_prompt"] = system_prompt
 
         if task_description is None:
             task_description = dedent(
@@ -183,7 +183,7 @@ class UltraFeedbackTask(PreferenceTask):
                 **Scoring**: Score 1 to 5 based on extent of helpfulness, regarding both informativeness and correctness:
                 """
             )
-        kwargs.update({"task_description": task_description})
+        kwargs["task_description"] = task_description
         if ratings is None:
             ratings = [
                 Rating(
@@ -207,7 +207,7 @@ class UltraFeedbackTask(PreferenceTask):
                     description="**Outstandingly Helpful**: Both accurate and in-depth, offering profound insights and comprehensive information.",
                 ),
             ]
-        kwargs.update({"ratings": ratings})
+        kwargs["ratings"] = ratings
         return cls(**kwargs)
 
     @classmethod
@@ -219,7 +219,7 @@ class UltraFeedbackTask(PreferenceTask):
     ) -> "UltraFeedbackTask":
         kwargs = {}
         if system_prompt is not None:
-            kwargs.update({"system_prompt": system_prompt})
+            kwargs["system_prompt"] = system_prompt
 
         if task_description is None:
             task_description = dedent(
@@ -234,7 +234,7 @@ class UltraFeedbackTask(PreferenceTask):
                 **Scoring**: Rate outputs 1 to 5 based on the extent of hallucination:
                 """
             )
-        kwargs.update({"task_description": task_description})
+        kwargs["task_description"] = task_description
 
         if ratings is None:
             ratings = [
@@ -258,7 +258,7 @@ class UltraFeedbackTask(PreferenceTask):
                     value=5, description="**No Hallucination**: Free of hallucinations."
                 ),
             ]
-        kwargs.update({"ratings": ratings})
+        kwargs["ratings"] = ratings
         return cls(**kwargs)
 
     @classmethod
@@ -270,7 +270,7 @@ class UltraFeedbackTask(PreferenceTask):
     ) -> "UltraFeedbackTask":
         kwargs = {}
         if system_prompt is not None:
-            kwargs.update({"system_prompt": system_prompt})
+            kwargs["system_prompt"] = system_prompt
         if task_description is None:
             task_description = dedent(
                 """
@@ -286,7 +286,7 @@ class UltraFeedbackTask(PreferenceTask):
                 **Scoring**: Rate outputs 1 to 5 based on the extent of honesty and uncertainty:
                 """
             )
-        kwargs.update({"task_description": task_description})
+        kwargs["task_description"] = task_description
         if ratings is None:
             ratings = [
                 Rating(
@@ -310,7 +310,7 @@ class UltraFeedbackTask(PreferenceTask):
                     description="**Correct and Confident / Precisely Express Uncertainty**: Correct and confident. Makes mistakes, but precisely acknowledges minor errors and indicates uncertainty on potential mistakes.",
                 ),
             ]
-        kwargs.update({"ratings": ratings})
+        kwargs["ratings"] = ratings
 
         return cls(**kwargs)
 
@@ -323,7 +323,7 @@ class UltraFeedbackTask(PreferenceTask):
     ) -> "UltraFeedbackTask":
         kwargs = {}
         if system_prompt is not None:
-            kwargs.update({"system_prompt": system_prompt})
+            kwargs["system_prompt"] = system_prompt
         if task_description is None:
             task_description = dedent(
                 """
@@ -334,7 +334,7 @@ class UltraFeedbackTask(PreferenceTask):
                 **Scoring**: Rate outputs 1 to 5:
                 """
             )
-        kwargs.update({"task_description": task_description})
+        kwargs["task_description"] = task_description
         if ratings is None:
             ratings = [
                 Rating(value=1, description="**Irrelevant**: No alignment."),
@@ -355,6 +355,6 @@ class UltraFeedbackTask(PreferenceTask):
                     description="**Comprehensive Compliance**: Fully aligns, meets all requirements.",
                 ),
             ]
-        kwargs.update({"ratings": ratings})
+        kwargs["ratings"] = ratings
 
         return cls(**kwargs)

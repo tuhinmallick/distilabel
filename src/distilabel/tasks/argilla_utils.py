@@ -35,10 +35,12 @@ def infer_fields_from_dataset_row(
         if arg_name not in dataset_row:
             continue
         if isinstance(dataset_row[arg_name], list):
-            for idx in range(1, len(dataset_row[arg_name]) + 1):
-                processed_items.append(
-                    rg.TextField(name=f"{arg_name}-{idx}", title=f"{arg_name}-{idx}")
-                )  # type: ignore
+            processed_items.extend(
+                rg.TextField(
+                    name=f"{arg_name}-{idx}", title=f"{arg_name}-{idx}"
+                )
+                for idx in range(1, len(dataset_row[arg_name]) + 1)
+            )
         elif isinstance(dataset_row[arg_name], str):
             processed_items.append(rg.TextField(name=arg_name, title=arg_name))  # type: ignore
     return processed_items
